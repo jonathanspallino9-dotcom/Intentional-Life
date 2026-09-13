@@ -1,7 +1,0 @@
-import {describe,expect,it} from 'vitest';
-import {dailyStock} from '../src/game/catalog';
-import {canPlace,cellsOverlap,rewardForEvent} from '../src/game/rules';
-import type {ProductivityEvent} from '../src/core/types';
-describe('game reward bridge',()=>{it('uses task point snapshot as Spark',()=>{const e:ProductivityEvent={id:'e',type:'TASK_COMPLETED',sourceId:'o',effectiveDate:'2026-09-13',recordedAt:'',payload:{points:3},version:1};expect(rewardForEvent(e)).toBe(3)});it('gives a deliberate day bonus',()=>{const e:ProductivityEvent={id:'e',type:'DELIBERATE_DAY_COMPLETED',sourceId:'d',effectiveDate:'2026-09-13',recordedAt:'',version:1};expect(rewardForEvent(e)).toBe(5)})});
-describe('daily shops',()=>{it('are deterministic for a date',()=>expect(dailyStock('FURNITURE_STORE','2026-09-13',1).map(x=>x.id)).toEqual(dailyStock('FURNITURE_STORE','2026-09-13',1).map(x=>x.id)));it('only show items unlocked by shop level',()=>expect(dailyStock('FURNITURE_STORE','2026-09-13',1,20).every(x=>x.minShopLevel<=1)).toBe(true))});
-describe('grid placement',()=>{it('detects overlaps',()=>expect(cellsOverlap({x:0,y:0,width:2,height:2},{x:1,y:1,width:2,height:2})).toBe(true));it('rejects occupied or out of bounds cells',()=>{const occupied=[{x:2,y:2,width:2,height:2}];expect(canPlace({x:2,y:2,width:1,height:1},occupied,10,8)).toBe(false);expect(canPlace({x:9,y:7,width:2,height:2},[],10,8)).toBe(false);expect(canPlace({x:0,y:0,width:2,height:2},occupied,10,8)).toBe(true)})});

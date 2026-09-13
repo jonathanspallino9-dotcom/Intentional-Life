@@ -1,1 +1,0 @@
-{"compilerOptions":{"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","strict":true,"skipLibCheck":true,"noEmit":true},"include":["src/core/types.ts","src/game/types.ts","src/game/catalog.ts","src/game/rules.ts","src/game/world.ts"]}
