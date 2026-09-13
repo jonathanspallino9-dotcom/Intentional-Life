@@ -1,0 +1,7 @@
+import {db} from './db';
+export interface Backup {format:'intentional-productivity-backup';backupFormatVersion:1;databaseSchemaVersion:1;createdAt:string;data:Record<string,unknown[]>}
+const tables=['settings','domains','activities','activityVersions','occurrences','dayRecords','intentions','reflections','productivityEvents','metadata'] as const;
+export async function createBackup():Promise<Backup>{const data:Record<string,unknown[]>={};for(const name of tables)data[name]=await db.table(name).toArray();return{format:'intentional-productivity-backup',backupFormatVersion:1,databaseSchemaVersion:1,createdAt:new Date().toISOString(),data}}
+export function validateBackup(x:any):x is Backup{return x?.format==='intentional-productivity-backup'&&x?.backupFormatVersion===1&&x?.databaseSchemaVersion===1&&tables.every(t=>Array.isArray(x.data?.[t]))}
+export async function restoreBackup(b:Backup){if(!validateBackup(b))throw new Error('Invalid or incompatible backup');await db.transaction('rw',tables.map(t=>db.table(t)),async()=>{for(const name of tables){await db.table(name).clear();await db.table(name).bulkAdd(b.data[name])}})}
+export async function downloadBackup(){const b=await createBackup();const blob=new Blob([JSON.stringify(b,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`intentional-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url)}
