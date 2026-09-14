@@ -45,3 +45,9 @@ This package is ready for Cloudflare Workers static-assets deployment.
 `wrangler.jsonc` points Cloudflare at `./dist` and enables SPA fallback.
 
 Before replacing a version already in use on your phone, make an in-app backup. This app is local-first and that browser's IndexedDB contains its current data.
+
+## Building-entry root fix
+The root application live query no longer subscribes to `npcProgress`, because NPC progress is bookkeeping and is not rendered by the current UI. Entering a building updates local Grow navigation first, then records the NPC interaction on the next event-loop turn. This prevents an NPC database write from participating in the same reactive render cycle as the building-entry state change.
+
+## Carpenter fallback navigation
+Grow includes a permanent `Carpenter` button beside Town and Home. It uses the same centralized building-entry route as the settlement Carpenter. Tapping the building remains the intended primary interaction; this control is the reliable fallback.
